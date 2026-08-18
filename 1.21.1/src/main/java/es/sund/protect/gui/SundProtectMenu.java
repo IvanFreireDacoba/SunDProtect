@@ -23,20 +23,17 @@ import java.util.List;
 
 /**
  * Menu tipo "cofre de 4 filas" (36 huecos, vanilla, sin necesitar mod ni
- * resourcepack en el cliente) -- solo lo abre staff (permiso de operador),
- * asi que no hace falta distribuir nada a los jugadores para que se vea
- * bien. Cada flag ocupa 2 slots consecutivos: el item vanilla que la
- * representa (zombie_head, TNT, cofre... ver FlagInfo) y, justo al lado,
- * un bloque de lana que marca el estado -- lima si el flag esta a true,
- * roja si esta a false (deliberado, invertido respecto al viejo esquema
- * de la v1.0.0 donde roja significaba "denied"/true; pedido explicito del
- * usuario el 2026-08-18: verde=true, rojo=false, sin excepciones).
+ * resourcepack en el cliente) que muestra UN item por flag -- cristal
+ * verde si esta a true (regla activa, bloquea), cristal rojo si esta a
+ * false (regla inactiva, permite). Un solo slot por flag a proposito
+ * (pedido explicito del usuario el 2026-08-19: dos slots por flag "es
+ * poco coherente"), el nombre/lore del item es lo que identifica de que
+ * flag se trata.
  *
- * Click en cualquiera de los dos slots de una flag (icono o indicador) la
- * invierte y refresca TODOS los slots de flags, no solo los de la
- * pulsada -- porque activar deny-all-spawn puede cambiar otras dos flags
- * en cascada (ver ProtectRegion.setFlag). Nunca se mueve ni se saca
- * ningun item de verdad, es solo una interfaz.
+ * Click en el slot de una flag la invierte y refresca TODOS los slots de
+ * flags, no solo el pulsado -- porque activar deny-all-spawn puede
+ * cambiar otras dos flags en cascada (ver ProtectRegion.setFlag). Nunca
+ * se mueve ni se saca ningun item de verdad, es solo una interfaz.
  *
  * Version 1.21.1: Mojang sustituyo NBT "display"/setHoverName por el
  * sistema de Data Components (ItemStack#set(DataComponentType, T)) --
@@ -59,16 +56,13 @@ public class SundProtectMenu extends ChestMenu {
     private static Container buildContainer(ProtectRegion region) {
         SimpleContainer container = new SimpleContainer(SIZE);
         List<FlagInfo> flags = Flags.ALL_INFO;
-        for (int slot = 0; slot < SIZE; slot++) {
-            int flagIndex = slot / 2;
-            if (flagIndex < flags.size()) {
-                FlagInfo flag = flags.get(flagIndex);
-                boolean denied = region.isFlagDenied(flag.id());
-                container.setItem(slot, slot % 2 == 0 ? iconFor(flag, denied) : indicatorFor(denied));
+        for (int i = 0; i < SIZE; i++) {
+            if (i < flags.size()) {
+                container.setItem(i, itemFor(region, flags.get(i)));
             } else {
                 ItemStack filler = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
                 filler.set(DataComponents.CUSTOM_NAME, Component.literal(" "));
-                container.setItem(slot, filler);
+                container.setItem(i, filler);
             }
         }
         return container;
@@ -97,8 +91,9 @@ public class SundProtectMenu extends ChestMenu {
         return lines;
     }
 
-    private static ItemStack iconFor(FlagInfo flag, boolean denied) {
-        Item base = flag.icon();
+    private static ItemStack itemFor(ProtectRegion region, FlagInfo flag) {
+        boolean denied = region.isFlagDenied(flag.id());
+        Item base = denied ? Items.GREEN_STAINED_GLASS : Items.RED_STAINED_GLASS;
         ItemStack stack = new ItemStack(base);
         stack.set(DataComponents.CUSTOM_NAME, Component.literal((denied ? "§c" : "§a") + flag.displayName())
                 .withStyle(s -> s.withItalic(false)));
@@ -108,18 +103,6 @@ public class SundProtectMenu extends ChestMenu {
             lore.add(Component.literal("§7" + line));
         }
         lore.add(Component.literal(""));
-        lore.add(Component.literal("§fEstado actual: " + (denied ? "§ctrue" : "§afalse")));
-        lore.add(Component.literal("§8Click para invertir"));
-        stack.set(DataComponents.LORE, new ItemLore(lore));
-        return stack;
-    }
-
-    private static ItemStack indicatorFor(boolean denied) {
-        ItemStack stack = new ItemStack(denied ? Items.LIME_WOOL : Items.RED_WOOL);
-        stack.set(DataComponents.CUSTOM_NAME, Component.literal(denied ? "§atrue" : "§cfalse")
-                .withStyle(s -> s.withItalic(false)));
-
-        List<Component> lore = new ArrayList<>();
         lore.add(Component.literal("§etrue"));
         lore.add(Component.literal("§7  regla activa,"));
         lore.add(Component.literal("§7  impide la accion"));
@@ -127,7 +110,9 @@ public class SundProtectMenu extends ChestMenu {
         lore.add(Component.literal("§7  regla inactiva,"));
         lore.add(Component.literal("§7  se permite"));
         lore.add(Component.literal(""));
+        lore.add(Component.literal("§fEstado actual: " + (denied ? "§ctrue" : "§afalse")));
         lore.add(Component.literal("§8Click para invertir"));
+
         stack.set(DataComponents.LORE, new ItemLore(lore));
         return stack;
     }
@@ -137,21 +122,17 @@ public class SundProtectMenu extends ChestMenu {
     private void refreshAllFlagSlots() {
         List<FlagInfo> flags = Flags.ALL_INFO;
         for (int i = 0; i < flags.size(); i++) {
-            FlagInfo flag = flags.get(i);
-            boolean denied = region.isFlagDenied(flag.id());
-            this.display.setItem(i * 2, iconFor(flag, denied));
-            this.display.setItem(i * 2 + 1, indicatorFor(denied));
+            this.display.setItem(i, itemFor(region, flags.get(i)));
         }
         this.broadcastChanges();
     }
 
     @Override
     public void clicked(int slotId, int button, ClickType clickType, Player player) {
-        int flagIndex = slotId / 2;
-        if (slotId < 0 || flagIndex >= Flags.ALL_INFO.size()) {
+        if (slotId < 0 || slotId >= Flags.ALL_INFO.size()) {
             return; // huecos de relleno o clicks fuera del menu (inventario del jugador) -- ignorar
         }
-        FlagInfo flag = Flags.ALL_INFO.get(flagIndex);
+        FlagInfo flag = Flags.ALL_INFO.get(slotId);
         boolean currentlyDenied = region.isFlagDenied(flag.id());
         region.setFlag(flag.id(), !currentlyDenied); // invierte true<->false (con cascada si aplica)
         RegionManager.save();

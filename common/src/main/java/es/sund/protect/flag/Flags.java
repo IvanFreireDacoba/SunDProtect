@@ -1,7 +1,5 @@
 package es.sund.protect.flag;
 
-import net.minecraft.world.item.Items;
-
 import java.util.List;
 
 public final class Flags {
@@ -24,23 +22,20 @@ public final class Flags {
      * nace totalmente cerrada, hay que abrir a mano lo que se quiera
      * permitir con /sundprotect flag <region> (menu) o por comando.
      *
-     * El ultimo argumento de cada FlagInfo es el item vanilla que lo
-     * representa en el menu (ver FlagInfo) -- solo staff ve este menu, y
-     * son items reales del juego, no hace falta ningun resourcepack.
      */
     public static final List<FlagInfo> ALL_INFO = List.of(
-            new FlagInfo(MOB_SPAWN, "Spawn de mobs", "Bloquea el spawn natural de mobs hostiles (creeper, zombie, skeleton, spider...). No afecta a NPCs de CustomNPCs.", true, Items.ZOMBIE_HEAD),
-            new FlagInfo(BREAK, "Romper bloques", "Nadie (salvo OP) puede romper bloques en la region.", true, Items.IRON_PICKAXE),
-            new FlagInfo(PLACE, "Colocar bloques", "Nadie (salvo OP) puede colocar bloques ni cubos de liquido (verter o recoger) en la region.", true, Items.GRASS_BLOCK),
-            new FlagInfo(MOBGRIEF, "Griefing de explosiones", "Ninguna explosion (creeper, TNT, carga de viento...) destruye bloques en la region.", true, Items.TNT),
-            new FlagInfo(PVP, "PVP entre jugadores", "Impide que los jugadores se hagan dano entre si dentro de la region.", true, Items.IRON_SWORD),
-            new FlagInfo(ANIMAL_SPAWN, "Spawn de animales", "Bloquea el spawn natural de animales (vaca, cerdo, oveja, gallina...).", true, Items.EGG),
-            new FlagInfo(ALL_SPAWN, "Spawn de TODO", "Bloquea el spawn natural de cualquier entidad (mobs, animales, aldeanos...), salvo jugadores y NPCs de CustomNPCs. Al activarla tambien activa spawn de mobs y de animales automaticamente (no al reves: desactivarla despues no las toca).", true, Items.SPAWNER),
-            new FlagInfo(USE, "Usar mecanismos", "Nadie (salvo OP) puede usar puertas, trampillas, verjas, palancas, botones ni placas de presion en la region.", true, Items.LEVER),
-            new FlagInfo(CONTAINER, "Abrir contenedores", "Nadie (salvo OP) puede abrir cofres, barriles, hornos, shulkers ni otros contenedores en la region.", true, Items.CHEST),
-            new FlagInfo(ITEM_DROP, "Tirar items", "Nadie (salvo OP) puede tirar items (tecla Q) estando dentro de la region.", true, Items.DROPPER),
-            new FlagInfo(ITEM_PICKUP, "Recoger items", "Nadie (salvo OP) puede recoger items del suelo dentro de la region.", true, Items.HOPPER),
-            new FlagInfo(LEASH, "Atar con correa", "Nadie (salvo OP) puede atar entidades con correa dentro de la region.", true, Items.LEAD)
+            new FlagInfo(MOB_SPAWN, "Spawn de mobs", "Bloquea el spawn natural de mobs hostiles (creeper, zombie, skeleton, spider...). No afecta a NPCs de CustomNPCs.", true),
+            new FlagInfo(BREAK, "Romper bloques", "Nadie (salvo OP) puede romper bloques en la region.", true),
+            new FlagInfo(PLACE, "Colocar bloques", "Nadie (salvo OP) puede colocar bloques ni cubos de liquido (verter o recoger) en la region.", true),
+            new FlagInfo(MOBGRIEF, "Griefing de explosiones", "Ninguna explosion (creeper, TNT, carga de viento...) destruye bloques en la region.", true),
+            new FlagInfo(PVP, "PVP entre jugadores", "Impide que los jugadores se hagan dano entre si dentro de la region.", true),
+            new FlagInfo(ANIMAL_SPAWN, "Spawn de animales", "Bloquea el spawn natural de animales (vaca, cerdo, oveja, gallina...).", true),
+            new FlagInfo(ALL_SPAWN, "Spawn de TODO", "Bloquea el spawn natural de cualquier entidad (mobs, animales, aldeanos...), salvo jugadores y NPCs de CustomNPCs. Al activarla tambien activa spawn de mobs y de animales automaticamente (no al reves: desactivarla despues no las toca).", true),
+            new FlagInfo(USE, "Usar mecanismos", "Nadie (salvo OP) puede usar puertas, trampillas, verjas, palancas, botones ni placas de presion en la region.", true),
+            new FlagInfo(CONTAINER, "Abrir contenedores", "Nadie (salvo OP) puede abrir cofres, barriles, hornos, shulkers ni otros contenedores en la region.", true),
+            new FlagInfo(ITEM_DROP, "Tirar items", "Nadie (salvo OP) puede tirar items (tecla Q) estando dentro de la region.", true),
+            new FlagInfo(ITEM_PICKUP, "Recoger items", "Nadie (salvo OP) puede recoger items del suelo dentro de la region.", true),
+            new FlagInfo(LEASH, "Atar con correa", "Nadie (salvo OP) puede atar entidades con correa dentro de la region.", true)
     );
 
     public static final List<String> ALL = ALL_INFO.stream().map(FlagInfo::id).toList();

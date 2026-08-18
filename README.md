@@ -59,14 +59,11 @@ normalidad.
 
 ## Iconos
 
-Solo staff abre este menú (hace falta permiso de operador), así que no
-tiene sentido distribuir un resourcepack para ello — son items 100%
-vanilla, todos los clientes ya los conocen de fábrica. Cada flag ocupa dos
-slots seguidos: el item que la representa (cabeza de zombi para spawn de
-mobs, TNT para griefing, cofre para contenedores... ver la tabla de arriba)
-y, justo al lado, un bloque de lana que marca el estado — **lima = `true`**
-(regla activa, bloquea), **roja = `false`** (regla inactiva, permite). Un
-click en cualquiera de los dos slots invierte la flag.
+Cada flag ocupa un único slot: un bloque de cristal cuyo color marca el
+estado — **verde = `true`** (regla activa, bloquea), **rojo = `false`**
+(regla inactiva, permite). El nombre y la descripción del item (visibles
+al pasar el ratón) identifican de qué flag se trata. Son items 100%
+vanilla — no hace falta ningún resourcepack ni tocar el cliente para nada.
 
 ## Estructura
 
