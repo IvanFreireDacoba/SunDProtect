@@ -5,7 +5,9 @@
   "mixins": [
     "NaturalSpawnMixin",
     "PlaceBlockMixin",
-    "ExplosionGriefMixin"
+    "ExplosionGriefMixin",
+    "ItemDropMixin",
+    "ItemPickupMixin"
   ],
   "client": [],
   "server": [],

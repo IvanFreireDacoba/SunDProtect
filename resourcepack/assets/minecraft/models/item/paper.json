@@ -1,0 +1,152 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "item/paper"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 2000
+      },
+      "model": "sundprotect:item/mob_spawn_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2001
+      },
+      "model": "sundprotect:item/mob_spawn_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2002
+      },
+      "model": "sundprotect:item/break_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2003
+      },
+      "model": "sundprotect:item/break_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2004
+      },
+      "model": "sundprotect:item/place_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2005
+      },
+      "model": "sundprotect:item/place_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2006
+      },
+      "model": "sundprotect:item/mobgrief_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2007
+      },
+      "model": "sundprotect:item/mobgrief_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2008
+      },
+      "model": "sundprotect:item/pvp_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2009
+      },
+      "model": "sundprotect:item/pvp_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2010
+      },
+      "model": "sundprotect:item/animal_spawn_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2011
+      },
+      "model": "sundprotect:item/animal_spawn_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2012
+      },
+      "model": "sundprotect:item/all_spawn_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2013
+      },
+      "model": "sundprotect:item/all_spawn_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2014
+      },
+      "model": "sundprotect:item/use_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2015
+      },
+      "model": "sundprotect:item/use_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2016
+      },
+      "model": "sundprotect:item/container_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2017
+      },
+      "model": "sundprotect:item/container_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2018
+      },
+      "model": "sundprotect:item/item_drop_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2019
+      },
+      "model": "sundprotect:item/item_drop_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2020
+      },
+      "model": "sundprotect:item/item_pickup_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2021
+      },
+      "model": "sundprotect:item/item_pickup_on"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2022
+      },
+      "model": "sundprotect:item/leash_off"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2023
+      },
+      "model": "sundprotect:item/leash_on"
+    }
+  ]
+}

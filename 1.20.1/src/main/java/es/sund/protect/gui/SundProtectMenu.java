@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -22,23 +22,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Menu tipo "cofre de una fila" (9 huecos, vanilla, sin necesitar mod en
- * el cliente) que muestra un item por flag: lana roja=true (regla activa,
- * bloquea), lana verde=false (regla inactiva, permite). Click en
- * cualquier boton del raton invierte el flag y refresca el item en el
- * sitio -- nunca se mueve ni se saca ningun item de verdad, es solo una
- * interfaz.
+ * Menu tipo "cofre de 4 filas" (36 huecos, vanilla, sin necesitar mod en
+ * el cliente) que muestra un item por flag -- item base "paper" con un
+ * CustomModelData distinto por flag/estado (2000 + iconIndex*2 [+1 si
+ * true], ver FlagInfo y icon_gen/generate_icons.py). Con el resourcepack
+ * de este repo instalado en el servidor, cada flag se ve como un icono
+ * propio (zombie, TNT, cofre...) con un punto verde/rojo en la esquina
+ * segun su estado; sin el resourcepack, el cliente ve papel normal
+ * distinguible solo por nombre/lore (la logica de proteccion no depende
+ * en ningun caso de que el resourcepack este instalado).
+ *
+ * Click en cualquier boton del raton invierte el flag y refresca TODOS
+ * los slots de flags (no solo el pulsado, porque activar deny-all-spawn
+ * puede cambiar otras dos flags en cascada -- ver ProtectRegion.setFlag).
+ * Nunca se mueve ni se saca ningun item de verdad, es solo una interfaz.
  */
 public class SundProtectMenu extends ChestMenu {
 
-    private static final int SIZE = 9;
+    private static final int ROWS = 4;
+    private static final int SIZE = ROWS * 9;
+    private static final int BASE_CUSTOM_MODEL_DATA = 2000;
 
     private final ProtectRegion region;
     private final Container display;
 
     public SundProtectMenu(int syncId, Inventory playerInventory, ProtectRegion region) {
-        super(net.minecraft.world.inventory.MenuType.GENERIC_9x1, syncId, playerInventory,
-                buildContainer(region), 1);
+        super(MenuType.GENERIC_9x4, syncId, playerInventory, buildContainer(region), ROWS);
         this.region = region;
         this.display = this.getContainer();
     }
@@ -83,8 +92,10 @@ public class SundProtectMenu extends ChestMenu {
 
     private static ItemStack itemFor(ProtectRegion region, FlagInfo flag) {
         boolean denied = region.isFlagDenied(flag.id());
-        Item base = denied ? Items.RED_WOOL : Items.LIME_WOOL;
-        ItemStack stack = new ItemStack(base);
+        ItemStack stack = new ItemStack(Items.PAPER);
+        int customModelData = BASE_CUSTOM_MODEL_DATA + flag.iconIndex() * 2 + (denied ? 1 : 0);
+        stack.getOrCreateTag().putInt("CustomModelData", customModelData);
+
         stack.setHoverName(Component.literal((denied ? "§c" : "§a") + flag.displayName())
                 .withStyle(s -> s.withItalic(false)));
 
@@ -112,6 +123,16 @@ public class SundProtectMenu extends ChestMenu {
         return stack;
     }
 
+    /** Repinta todos los slots de flags -- necesario porque un solo click
+     * puede cambiar varios flags a la vez (cascada de deny-all-spawn). */
+    private void refreshAllFlagSlots() {
+        List<FlagInfo> flags = Flags.ALL_INFO;
+        for (int i = 0; i < flags.size(); i++) {
+            this.display.setItem(i, itemFor(region, flags.get(i)));
+        }
+        this.broadcastChanges();
+    }
+
     @Override
     public void clicked(int slotId, int button, ClickType clickType, Player player) {
         if (slotId < 0 || slotId >= Flags.ALL_INFO.size()) {
@@ -119,10 +140,9 @@ public class SundProtectMenu extends ChestMenu {
         }
         FlagInfo flag = Flags.ALL_INFO.get(slotId);
         boolean currentlyDenied = region.isFlagDenied(flag.id());
-        region.setFlag(flag.id(), !currentlyDenied); // invierte true<->false
+        region.setFlag(flag.id(), !currentlyDenied); // invierte true<->false (con cascada si aplica)
         RegionManager.save();
-        this.display.setItem(slotId, itemFor(region, flag));
-        this.broadcastChanges();
+        refreshAllFlagSlots();
     }
 
     @Override

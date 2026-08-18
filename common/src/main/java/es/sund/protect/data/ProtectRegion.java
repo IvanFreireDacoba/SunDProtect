@@ -1,5 +1,6 @@
 package es.sund.protect.data;
 
+import es.sund.protect.flag.Flags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -53,8 +54,18 @@ public class ProtectRegion {
 
     /**
      * @param denied true = activa la regla (bloquea), false = la desactiva (permite)
+     *
+     * Cascada de un solo sentido: activar deny-all-spawn tambien activa
+     * deny-mob-spawn y deny-animal-spawn (pedido explicito del usuario,
+     * 2026-08-18) -- desactivar deny-all-spawn despues NO las toca, para
+     * no deshacer un ajuste fino que alguien hubiera puesto a mano.
      */
     public void setFlag(String flag, boolean denied) {
         flags.put(flag, denied);
+        if (Flags.ALL_SPAWN.equals(flag) && denied) {
+            for (String cascaded : Flags.SPAWN_CASCADE) {
+                flags.put(cascaded, true);
+            }
+        }
     }
 }
