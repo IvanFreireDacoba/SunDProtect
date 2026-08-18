@@ -17,9 +17,8 @@ import java.util.Iterator;
  * Filtra la lista de bloques a destruir de cualquier explosion (creeper,
  * TNT, cargas de viento, etc.) despues de que explode() la calcula, antes
  * de que finalizeExplosion() la aplique -- usa el getter publico
- * getToBlow() de Explosion, sin necesidad de capturar variables locales
- * del bytecode (mas fragil, es lo que hace YAWP). Cubre "griefing" para
- * todo tipo de explosion, no solo creepers.
+ * getToBlow() de Explosion. Cubre "griefing" para todo tipo de explosion,
+ * no solo creepers.
  */
 @Mixin(Explosion.class)
 public class ExplosionGriefMixin {

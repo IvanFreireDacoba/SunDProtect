@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Engancha ServerLevel#addFreshEntity, que es el metodo que usa el
- * spawn natural (NaturalSpawner) -- no addEntity, que es el que engancha
- * YAWP y no cubre el spawn natural (por eso el flag spawning-monster de
- * YAWP no bloqueaba nada de noche, ver RESUME.md).
+ * Engancha ServerLevel#addFreshEntity, el metodo que usa el spawn natural
+ * (NaturalSpawner) -- necesario para que los flags de spawn cubran de
+ * verdad la aparicion natural de mobs/animales, no solo la generada por
+ * comandos o spawners.
  *
  * Las entidades de CustomNPCs (namespace de registro "customnpcs") y los
  * jugadores nunca se ven afectados por ningun flag de spawn, ni siquiera

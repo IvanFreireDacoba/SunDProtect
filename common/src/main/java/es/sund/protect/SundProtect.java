@@ -27,7 +27,7 @@ public class SundProtect implements ModInitializer {
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
             if (player.hasPermissions(2)) {
-                return true; // OP siempre puede, igual que YAWP con op_bypass_flags
+                return true; // OP siempre puede saltarse la proteccion
             }
             boolean denied = RegionManager.isDenied(world.dimension(), pos, es.sund.protect.flag.Flags.BREAK);
             return !denied;
