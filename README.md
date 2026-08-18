@@ -59,36 +59,14 @@ normalidad.
 
 ## Iconos
 
-El menú (`/sundprotect flag <región>`) muestra un icono distinto por cada
-flag (cabeza de zombi para spawn de mobs, TNT para griefing, cofre para
-contenedores...) con un pequeño punto en la esquina superior izquierda que
-cambia de color según el estado: **verde = `true`** (regla activa,
-bloquea), **rojo = `false`** (regla inactiva, permite).
-
-Esto es 100% del lado del servidor — no hace falta instalar nada en el
-cliente ni distribuir un mod aparte. El truco es el mismo que usan la
-mayoría de servidores vanilla con "items custom": el menú usa un item
-`paper` normal con un `custom_model_data` distinto por icono, y un
-resourcepack (adjunto en cada [release](https://github.com/IvanFreireDacoba/SunDProtect/releases),
-`sundprotect-resourcepack-mc<versión>.zip`) mapea cada valor a su textura.
-Para que los jugadores lo vean, sirve el resourcepack desde tu propio
-servidor (súbelo donde quieras, un CDN, un enlace directo...) y añade en
-`server.properties`:
-
-```properties
-resource-pack=https://tu-dominio.com/sundprotect-resourcepack-mc1.20.1.zip
-resource-pack-sha1=<sha1 del zip>
-```
-
-**El mod funciona igual de bien sin el resourcepack instalado** — nada de
-la lógica de protección depende de él. Sin resourcepack, el menú se ve
-como papel normal, distinguible solo por nombre y descripción (igual que
-en la v1.0.0).
-
-Los PNG/JSON del resourcepack están generados con
-[`icon_gen/generate_icons.py`](icon_gen/generate_icons.py) (Python +
-Pillow) y empaquetados con `icon_gen/build_resourcepacks.sh` — el código
-fuente de los iconos está en el repo, no solo el zip final.
+Solo staff abre este menú (hace falta permiso de operador), así que no
+tiene sentido distribuir un resourcepack para ello — son items 100%
+vanilla, todos los clientes ya los conocen de fábrica. Cada flag ocupa dos
+slots seguidos: el item que la representa (cabeza de zombi para spawn de
+mobs, TNT para griefing, cofre para contenedores... ver la tabla de arriba)
+y, justo al lado, un bloque de lana que marca el estado — **lima = `true`**
+(regla activa, bloquea), **roja = `false`** (regla inactiva, permite). Un
+click en cualquiera de los dos slots invierte la flag.
 
 ## Estructura
 
@@ -105,14 +83,8 @@ versión de Minecraft.
   que diverge**: Mojang sustituyó el NBT `display`/`setHoverName` de
   `ItemStack` por el sistema de Data Components entre estas dos versiones
   (`ItemStack#set(DataComponentType, T)`, `DataComponents.LORE` con
-  `ItemLore`, y `CustomModelData` pasa de un entero suelto en NBT a un
-  record propio), así que el menú de flags tiene una implementación por
+  `ItemLore`), así que el menú de flags tiene una implementación por
   versión con el mismo resultado visual.
-- `resourcepack/` — assets (texturas + modelos) del resourcepack opcional,
-  compartidos entre ambas versiones (solo cambia el `pack_format` del
-  `pack.mcmeta`, según la versión de Minecraft).
-- `icon_gen/` — script que genera los iconos y el script que empaqueta los
-  dos zips finales (`dist/`, no versionado).
 
 ## Compilar
 
@@ -134,11 +106,10 @@ zona.
 
 ## Releases
 
-- `v1.1.0-mc1.20.1` / `v1.1.0-mc1.21.1` — icono por flag + punto de estado
-  (ver "Iconos"), 5 flags nuevas (`deny-use`, `deny-container`,
+- `v1.1.0-mc1.20.1` / `v1.1.0-mc1.21.1` — icono + indicador de estado por
+  flag (ver "Iconos"), 5 flags nuevas (`deny-use`, `deny-container`,
   `deny-item-drop`, `deny-item-pickup`, `deny-leash`) y la cascada de
-  `deny-all-spawn`. Cada release trae dos assets: el jar del mod y el
-  resourcepack opcional (`sundprotect-resourcepack-mc<versión>.zip`).
+  `deny-all-spawn`.
 - `v1.0.0-mc1.20.1` (SunD Origins) / `v1.0.0-mc1.21.1` (CobbleSpain) —
   primera versión pública, solo jar.
 
