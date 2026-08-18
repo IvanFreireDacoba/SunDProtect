@@ -9,7 +9,7 @@
     "homepage": "https://sund.es",
     "sources": "https://github.com/IvanFreireDacoba/SunDProtect"
   },
-  "license": "MIT",
+  "license": "Custom (SunD Studios Public License v1.0 -- ver LICENSE)",
   "environment": "server",
   "entrypoints": {
     "main": ["es.sund.protect.SundProtect"]
