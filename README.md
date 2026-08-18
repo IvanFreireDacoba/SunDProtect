@@ -55,8 +55,8 @@ normalidad.
 
 ## Estructura
 
-Mismo patrón que [SunDAuthSystem](https://github.com/IvanFreireDacoba/SunDAuthSystem)
-y [SunDScoreSync](https://github.com/IvanFreireDacoba/SunDScoreSync):
+Mismo patrón que otros mods de SunD Studios como
+[SunDScoreSync](https://github.com/IvanFreireDacoba/SunDScoreSync):
 código compartido en `common/`, un subproyecto Gradle independiente por
 versión de Minecraft.
 
@@ -74,10 +74,10 @@ versión de Minecraft.
 
 ## Compilar
 
-```bash
-export JAVA_HOME=~/.gradle/jdks/eclipse_adoptium-21-amd64-linux.2   # o cualquier JDK 21+
-export PATH="$JAVA_HOME/bin:$PATH"
+Requiere JDK 21+ (el runtime del propio servidor puede ser otro, esto es
+solo para compilar).
 
+```bash
 cd 1.20.1 && ./gradlew build   # jar en 1.20.1/build/libs/sundprotect-<version>.jar
 cd ../1.21.1 && ./gradlew build   # jar en 1.21.1/build/libs/sundprotect-<version>.jar
 ```
