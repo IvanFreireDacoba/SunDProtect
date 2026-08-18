@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "es.sund.protect.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "NaturalSpawnMixin",
+    "PlaceBlockMixin",
+    "ExplosionGriefMixin"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "sundprotect",
+  "version": "${version}",
+  "name": "SunD Protect",
+  "description": "Sistema propio de proteccion de regiones para servidores Fabric (inspirado en RedProtect): regiones cuboides por comando (/sundprotect), flags de spawn de mobs/animales, romper/colocar bloques y liquidos, griefing de explosiones y PVP.",
+  "authors": ["SunD Studios"],
+  "contact": {
+    "homepage": "https://sund.es",
+    "sources": "https://github.com/IvanFreireDacoba/SunDProtect"
+  },
+  "license": "MIT",
+  "environment": "server",
+  "entrypoints": {
+    "main": ["es.sund.protect.SundProtect"]
+  },
+  "mixins": [
+    "sundprotect.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "fabric-api": "*",
+    "minecraft": "1.20.1"
+  }
+}
