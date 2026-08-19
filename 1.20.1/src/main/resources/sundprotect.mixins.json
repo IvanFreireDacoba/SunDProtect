@@ -7,7 +7,8 @@
     "PlaceBlockMixin",
     "ExplosionGriefMixin",
     "ItemDropMixin",
-    "ItemPickupMixin"
+    "ItemPickupMixin",
+    "CommandProtectionMixin"
   ],
   "client": [],
   "server": [],

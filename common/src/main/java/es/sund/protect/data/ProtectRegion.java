@@ -5,7 +5,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,10 +22,21 @@ import java.util.Map;
  */
 public class ProtectRegion {
 
+    public static final int DEFAULT_PRIORITY = 99;
+
     public String name;
     public String dimension; // ResourceKey<Level>.location().toString()
     public int minX, minY, minZ, maxX, maxY, maxZ;
+    // 1 = maxima prioridad (se aplica primero si hay solape), 99 = minima
+    // (valor por defecto de una region nueva, se aplica en ultimo lugar).
+    public int priority = DEFAULT_PRIORITY;
     public Map<String, Boolean> flags = new HashMap<>();
+    // Listas de nombres de comando (sin "/", sin argumentos -- solo la
+    // palabra base, p.ej. "gamemode") para los flags ALLOWED_COMMANDS y
+    // DENIED_COMMANDS. Vacias por defecto; se gestionan con
+    // /sundprotect command <region> allow|deny add|remove <comando>.
+    public List<String> allowedCommandsList = new ArrayList<>();
+    public List<String> deniedCommandsList = new ArrayList<>();
 
     public ProtectRegion() {
     }
@@ -37,6 +50,17 @@ public class ProtectRegion {
         this.maxX = Math.max(p1.getX(), p2.getX());
         this.maxY = Math.max(p1.getY(), p2.getY());
         this.maxZ = Math.max(p1.getZ(), p2.getZ());
+    }
+
+    public long volume() {
+        return (long) (maxX - minX + 1) * (maxY - minY + 1) * (maxZ - minZ + 1);
+    }
+
+    public boolean overlaps(ProtectRegion other) {
+        return dimension.equals(other.dimension)
+                && minX <= other.maxX && maxX >= other.minX
+                && minY <= other.maxY && maxY >= other.minY
+                && minZ <= other.maxZ && maxZ >= other.minZ;
     }
 
     public boolean contains(ResourceKey<Level> dim, BlockPos pos) {

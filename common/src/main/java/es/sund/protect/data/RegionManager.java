@@ -88,24 +88,43 @@ public class RegionManager {
     }
 
     /**
-     * Region con mayor volumen entre las que contienen la posicion (si hay
-     * varias solapadas, la mas pequena "gana" -- igual de intuitivo que
-     * prioridad explicita para el alcance actual, sin necesidad de un
-     * campo de prioridad manual).
+     * Region responsable entre las que contienen la posicion: gana la de
+     * menor numero de prioridad (1 = maxima, se aplica antes; 99 = minima,
+     * valor por defecto). Si dos regiones solapadas comparten la misma
+     * prioridad, desempata la de menor volumen (mismo criterio "mas
+     * especifica gana" que se usaba antes de que existiera el campo de
+     * prioridad).
      */
     public static Optional<ProtectRegion> findResponsibleRegion(ResourceKey<Level> dim, BlockPos pos) {
         ProtectRegion best = null;
         long bestVolume = Long.MAX_VALUE;
         for (ProtectRegion r : REGIONS) {
-            if (r.contains(dim, pos)) {
-                long volume = (long) (r.maxX - r.minX + 1) * (r.maxY - r.minY + 1) * (r.maxZ - r.minZ + 1);
-                if (volume < bestVolume) {
-                    bestVolume = volume;
-                    best = r;
-                }
+            if (!r.contains(dim, pos)) {
+                continue;
+            }
+            if (best == null || r.priority < best.priority
+                    || (r.priority == best.priority && r.volume() < bestVolume)) {
+                best = r;
+                bestVolume = r.volume();
             }
         }
         return Optional.ofNullable(best);
+    }
+
+    /**
+     * Regiones ya existentes cuyo cuboide se solapa con {@code region} (misma
+     * dimension, rangos de coordenadas que se cruzan) -- se usa al crear una
+     * region nueva para avisar de inmediato de con cuales queda superpuesta,
+     * antes de que nadie tenga que pisar la zona para descubrirlo.
+     */
+    public static List<ProtectRegion> findOverlapping(ProtectRegion region) {
+        List<ProtectRegion> result = new ArrayList<>();
+        for (ProtectRegion r : REGIONS) {
+            if (r != region && !r.name.equalsIgnoreCase(region.name) && r.overlaps(region)) {
+                result.add(r);
+            }
+        }
+        return result;
     }
 
     public static boolean isDenied(ResourceKey<Level> dim, BlockPos pos, String flag) {
