@@ -1,4 +1,4 @@
-package es.sund.protect.mixin;
+package es.sund.protect.command;
 
 import es.sund.protect.data.ProtectRegion;
 import es.sund.protect.data.RegionManager;
@@ -12,12 +12,25 @@ import java.util.Optional;
 
 /**
  * Logica compartida por los dos CommandProtectionMixin especificos de
- * version (1.20.1/1.21.1) -- Commands#performCommand cambia de firma entre
- * versiones (int en 1.20.1, void en 1.21.1, ver comentario en cada mixin),
- * asi que el mixin en si no puede vivir en common/, pero la comprobacion
- * real de flags si es identica en las dos.
+ * version (1.20.1/1.21.1, en es.sund.protect.mixin) -- Commands#performCommand
+ * cambia de firma entre versiones (int en 1.20.1, void en 1.21.1, ver
+ * comentario en cada mixin), asi que el mixin en si no puede vivir en
+ * common/, pero la comprobacion real de flags si es identica en las dos.
+ *
+ * Vive fuera de es.sund.protect.mixin a proposito (antes estaba ahi, con
+ * visibilidad de paquete) -- causaba un crash real en produccion:
+ * SpongePowered Mixin trata de forma especial el paquete declarado como
+ * "package" en sundprotect.mixins.json (es.sund.protect.mixin), y una
+ * clase normal (no-mixin) viviendo ahi puede acabar mal cargada/
+ * transformada por el propio Mixin en el classloader real de un servidor
+ * dedicado -- un problema de classloading que el entorno de desarrollo
+ * (runServer de Loom) no reproduce siempre igual que produccion, por eso
+ * no salto en las pruebas locales. Confirmado y diagnosticado por el
+ * usuario contra el crash real; el mismo mixin sin este cambio de
+ * paquete (solo quitandolo de la lista de mixins.json) se dejo publicado
+ * como parche de emergencia mientras se corregia esto de verdad.
  */
-final class CommandProtectionHelper {
+public final class CommandProtectionHelper {
 
     private CommandProtectionHelper() {
     }
@@ -26,7 +39,7 @@ final class CommandProtectionHelper {
      * true si el comando debe bloquearse -- ya envia el mensaje de fallo al
      * jugador si es asi, el mixin llamante solo tiene que cancelar.
      */
-    static boolean isBlocked(CommandSourceStack source, String command) {
+    public static boolean isBlocked(CommandSourceStack source, String command) {
         if (!(source.getEntity() instanceof ServerPlayer player) || player.hasPermissions(2)) {
             return false;
         }
