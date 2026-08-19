@@ -217,6 +217,10 @@ public final class SundProtectCommand {
             sb.append("  Lista negra (denied-commands): ")
                     .append(String.join(", ", r.deniedCommandsList)).append("\n");
         }
+        if (!r.customSpawnList.isEmpty()) {
+            sb.append("  Entidades bloqueadas (custom-spawn): ")
+                    .append(String.join(", ", r.customSpawnList)).append("\n");
+        }
         sb.append("  Flags (true = activa/bloquea, false = inactiva/permite):\n");
         if (r.flags.isEmpty()) {
             sb.append("  (ninguno puesto, todo permitido)");
@@ -279,11 +283,24 @@ public final class SundProtectCommand {
             ctx.getSource().sendFailure(Component.literal("No existe una region llamada '" + name + "'."));
             return 0;
         }
-        List<String> list = allowList ? maybe.get().allowedCommandsList : maybe.get().deniedCommandsList;
+        ProtectRegion region = maybe.get();
+        List<String> list = allowList ? region.allowedCommandsList : region.deniedCommandsList;
+        List<String> otherList = allowList ? region.deniedCommandsList : region.allowedCommandsList;
         String listLabel = allowList ? "blanca (allowed-commands)" : "negra (denied-commands)";
+        String otherLabel = allowList ? "negra (denied-commands)" : "blanca (allowed-commands)";
         if (list.stream().anyMatch(c -> c.equalsIgnoreCase(command))) {
             ctx.getSource().sendFailure(Component.literal(
                     "'" + command + "' ya esta en la lista " + listLabel + " de '" + name + "'."));
+            return 0;
+        }
+        // Un mismo comando no puede estar a la vez permitido y bloqueado en la
+        // misma region -- incoherencia real (que comando manda?), se rechaza
+        // en vez de dejar el estado ambiguo. Hay que quitarlo de la otra
+        // lista primero si de verdad se quiere mover de una a otra.
+        if (otherList.stream().anyMatch(c -> c.equalsIgnoreCase(command))) {
+            ctx.getSource().sendFailure(Component.literal(
+                    "'" + command + "' ya esta en la lista " + otherLabel + " de '" + name
+                            + "' -- quitalo de ahi primero (un comando no puede estar permitido y bloqueado a la vez)."));
             return 0;
         }
         list.add(command);
@@ -329,7 +346,7 @@ public final class SundProtectCommand {
             new HelpEntry("/sundprotect info <nombre>",
                     "Muestra los limites, la dimension, la prioridad, con que otras regiones se solapa y los flags de una region."),
             new HelpEntry("/sundprotect flag <nombre>",
-                    "Abre un menu de inventario para activar/desactivar los flags de la region con un click."),
+                    "Abre un menu de inventario para activar/desactivar los flags de la region con un click, agrupados en columnas por categoria (spawn, mecanismos, griefing...). Click derecho en 'Spawn de entidades concretas' abre un menu aparte para elegir que entidades bloquear (incluye entidades de mods, paginado)."),
             new HelpEntry("/sundprotect flag <nombre> <flag> <true|false>",
                     "Activa o desactiva un flag concreto por comando, sin abrir el menu."),
             new HelpEntry("/sundprotect priority <nombre> <1-99>",

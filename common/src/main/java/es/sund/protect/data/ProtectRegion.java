@@ -37,6 +37,11 @@ public class ProtectRegion {
     // /sundprotect command <region> allow|deny add|remove <comando>.
     public List<String> allowedCommandsList = new ArrayList<>();
     public List<String> deniedCommandsList = new ArrayList<>();
+    // Ids de registro de tipo de entidad ("namespace:path", p.ej.
+    // "minecraft:enderman") para el flag CUSTOM_SPAWN -- lista negra,
+    // gestionada desde el menu de flags (click derecho sobre el flag),
+    // nunca por comando de texto.
+    public List<String> customSpawnList = new ArrayList<>();
 
     public ProtectRegion() {
     }
